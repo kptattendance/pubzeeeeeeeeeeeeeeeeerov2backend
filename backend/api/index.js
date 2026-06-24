@@ -20,7 +20,7 @@ connectDB();
 // MIDDLEWARES
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://yourfrontend.vercel.app"],
+    origin: ["http://localhost:3000", "https://www.zerodegreebreweryandkitchen.com"],
     credentials: true,
   }),
 );
