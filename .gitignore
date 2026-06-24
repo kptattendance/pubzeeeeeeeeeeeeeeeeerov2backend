@@ -1,0 +1,5 @@
+node_modules
+.env
+frontend/public/videos/
+*.mp4
+*.MP4
