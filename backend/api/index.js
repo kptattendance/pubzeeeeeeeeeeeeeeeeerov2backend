@@ -17,13 +17,18 @@ const app = express();
 // CONNECT DB
 connectDB();
 
-// MIDDLEWARES
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://www.zerodegreebreweryandkitchen.com"],
+    origin: [
+      "http://localhost:3000",
+      "https://www.zerodegreebreweryandkitchen.com",
+      "https://zerodegreebreweryandkitchen.com",
+    ],
     credentials: true,
   }),
 );
+
+app.use(cors());
 
 app.use(express.json());
 app.use(cookieParser());
