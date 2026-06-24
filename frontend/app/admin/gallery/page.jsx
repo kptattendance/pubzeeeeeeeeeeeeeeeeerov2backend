@@ -120,6 +120,18 @@ export default function AdminGalleryPage() {
 
     if (!file) return;
 
+    // 4MB limit
+    if (file.size > 4 * 1024 * 1024) {
+      Swal.fire({
+        icon: "error",
+        title: "Image Too Large",
+        text: "Please upload an image smaller than 4 MB",
+        background: "#1A1411",
+        color: "#F5EBDD",
+      });
+      return;
+    }
+
     setFormData({
       ...formData,
       image: file,

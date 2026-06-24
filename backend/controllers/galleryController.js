@@ -66,6 +66,15 @@ export const createGalleryItem = async (req, res) => {
 
       const dataURI = `data:${req.file.mimetype};base64,${b64}`;
 
+      console.log("Request received");
+      console.log("File exists:", !!req.file);
+
+      if (req.file) {
+        console.log("File size:", req.file.size);
+      }
+
+      console.log("Starting Cloudinary upload...");
+
       const uploadedImage = await cloudinary.uploader.upload(dataURI, {
         folder: "pub-gallery",
       });
