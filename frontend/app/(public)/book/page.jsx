@@ -66,7 +66,7 @@ Date: ${form.date}
 Time: ${timeFormatted}
 Guests: ${form.guests}`;
 
-    const url = `https://wa.me/9591228330?text=${encodeURIComponent(message)}`;
+    const url = `https://wa.me/9986769503?text=${encodeURIComponent(message)}`;
 
     setTimeout(() => {
       setLoading(false);
