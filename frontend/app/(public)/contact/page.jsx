@@ -109,7 +109,9 @@ export default function ContactPage() {
                           Email
                         </p>
 
-                        <p className="text-[#F5EBDD]">info@zerodegree.com</p>
+                        <p className="text-[#F5EBDD]">
+                          info@zerodegreebreweryandkitchen.com
+                        </p>
                       </div>
 
                       <div>
