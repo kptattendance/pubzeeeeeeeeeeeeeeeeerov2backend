@@ -1,7 +1,7 @@
 "use client";
 
 export default function FloatingWhatsApp() {
-  const phone = "918159919085"; // your number
+  const phone = "+91 99864 66266"; // your number
 
   const message = encodeURIComponent(
     "Hi, I would like to book a table at Zero Degree 🍻",

@@ -66,7 +66,7 @@ Date: ${form.date}
 Time: ${timeFormatted}
 Guests: ${form.guests}`;
 
-    const url = `https://wa.me/9986769503?text=${encodeURIComponent(message)}`;
+    const url = `https://wa.me/9986466266?text=${encodeURIComponent(message)}`;
 
     setTimeout(() => {
       setLoading(false);
@@ -278,7 +278,7 @@ Guests: ${form.guests}`;
 
           {/* CALL */}
           <a
-            href="tel:+918159919085"
+            href="tel:+91 99864 66266"
             className="
               block text-center text-sm
               text-[#C5B19A]

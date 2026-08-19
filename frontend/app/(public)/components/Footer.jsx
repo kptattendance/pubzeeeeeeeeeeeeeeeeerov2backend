@@ -36,7 +36,7 @@ export default function Footer() {
 
           <div className="space-y-2 text-[#E6D5C3] text-sm">
             <p>📧 info@zerodegree.com</p>
-            <p>📞 +91 99867 69503</p>
+            <p>📞 +91 99864 66266</p>
             <p>📍 Bengaluru, Karnataka</p>
           </div>
         </div>
