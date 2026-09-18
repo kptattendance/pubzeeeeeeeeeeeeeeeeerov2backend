@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Menu, X, ShieldCheck } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { UserButton, useUser } from "@clerk/nextjs";
+
 const navItems = [
   { name: "Home", path: "/" },
   { name: "About", path: "/about" },
@@ -22,6 +23,7 @@ export default function Navbar() {
   const { isSignedIn, user } = useUser();
 
   const isAdmin = user?.publicMetadata?.role === "admin";
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 40);
@@ -61,20 +63,56 @@ export default function Navbar() {
             />
 
             {/* LOGO TEXT */}
-            <h1 className="text-2xl md:text-3xl font-extrabold tracking-wide leading-none">
-              <span
-                className="text-[#F5EBDD]"
-                style={{
-                  textShadow: `
-                    0 0 8px rgba(245,235,221,0.45),
-                    0 0 18px rgba(232,216,195,0.25)
-                  `,
-                }}
-              >
-                Zero
-              </span>{" "}
-              <span className="text-white">Degree</span>
-            </h1>
+           {/* LOGO TEXT */}
+<div className="flex flex-col justify-center">
+  <h1 className="text-2xl md:text-3xl font-extrabold tracking-wide leading-none">
+    <span
+      className="text-[#F5EBDD]"
+      style={{
+        textShadow: `
+          0 0 8px rgba(245,235,221,0.45),
+          0 0 18px rgba(232,216,195,0.25)
+        `,
+      }}
+    >
+      Zero
+    </span>{" "}
+    <span
+      className="text-white"
+      style={{
+        textShadow: `
+          0 0 8px rgba(255,255,255,0.35),
+          0 0 16px rgba(255,255,255,0.18)
+        `,
+      }}
+    >
+      Degree
+    </span>
+  </h1>
+
+  {/* COMPANY NAME */}
+  <span
+    className="
+      mt-1
+      text-[8px]
+      md:text-[10px]
+      tracking-[0.14em]
+      uppercase
+      font-semibold
+      text-[#F5EBDD]
+      whitespace-nowrap
+      leading-tight
+    "
+    style={{
+      textShadow: `
+        0 1px 4px rgba(0,0,0,0.9),
+        0 0 8px rgba(245,235,221,0.25)
+      `,
+    }}
+  >
+    Six Sigma Brew and Hospitality LLP
+  </span>
+</div>
           </motion.div>
         </Link>
 
@@ -117,15 +155,15 @@ export default function Navbar() {
                 <Link
                   href="/sign-in"
                   className="
-        px-5 py-3 rounded-full
-        border border-[#E8D8C3]/15
-        bg-[#241B17]/70
-        hover:bg-[#32251E]
-        text-[#F8F1E7]
-        font-medium
-        transition-all duration-300
-        inline-flex items-center gap-2
-      "
+                    px-5 py-3 rounded-full
+                    border border-[#E8D8C3]/15
+                    bg-[#241B17]/70
+                    hover:bg-[#32251E]
+                    text-[#F8F1E7]
+                    font-medium
+                    transition-all duration-300
+                    inline-flex items-center gap-2
+                  "
                 >
                   <ShieldCheck size={18} />
                   Admin Login
@@ -136,13 +174,13 @@ export default function Navbar() {
                 <Link
                   href="/admin"
                   className="
-    px-5 py-3 rounded-full
-      bg-[#241B17]
-      border border-[#E8D8C3]/10
-      text-[#F8F1E7]
-      hover:bg-[#32251E]
-      transition-all duration-300
-      "
+                    px-5 py-3 rounded-full
+                    bg-[#241B17]
+                    border border-[#E8D8C3]/10
+                    text-[#F8F1E7]
+                    hover:bg-[#32251E]
+                    transition-all duration-300
+                  "
                 >
                   Dashboard
                 </Link>
@@ -155,15 +193,15 @@ export default function Navbar() {
               <Link
                 href="/book"
                 className="
-        px-7 py-3 rounded-full
-        bg-[#9C7B57]
-        hover:bg-[#B08A61]
-        text-[#F8F1E7]
-        font-semibold
-        transition-all duration-300
-        shadow-[0_0_24px_rgba(156,123,87,0.35)]
-        inline-block
-      "
+                  px-7 py-3 rounded-full
+                  bg-[#9C7B57]
+                  hover:bg-[#B08A61]
+                  text-[#F8F1E7]
+                  font-semibold
+                  transition-all duration-300
+                  shadow-[0_0_24px_rgba(156,123,87,0.35)]
+                  inline-block
+                "
               >
                 Book Table
               </Link>
@@ -212,19 +250,20 @@ export default function Navbar() {
               </Link>
             );
           })}
+
           {!isSignedIn ? (
             <Link
               href="/sign-in"
               onClick={() => setIsOpen(false)}
               className="
-      block w-full text-center
-      border border-[#E8D8C3]/10
-      bg-[#241B17]
-      text-[#F8F1E7]
-      py-3 rounded-full
-      font-semibold
-      transition-all duration-300
-    "
+                block w-full text-center
+                border border-[#E8D8C3]/10
+                bg-[#241B17]
+                text-[#F8F1E7]
+                py-3 rounded-full
+                font-semibold
+                transition-all duration-300
+              "
             >
               Admin Login
             </Link>
@@ -234,14 +273,14 @@ export default function Navbar() {
                 href="/admin"
                 onClick={() => setIsOpen(false)}
                 className="
-      block w-full text-center
-      border border-[#E8D8C3]/10
-      bg-[#241B17]
-      text-[#F8F1E7]
-      py-3 rounded-full
-      font-semibold
-      transition-all duration-300
-    "
+                  block w-full text-center
+                  border border-[#E8D8C3]/10
+                  bg-[#241B17]
+                  text-[#F8F1E7]
+                  py-3 rounded-full
+                  font-semibold
+                  transition-all duration-300
+                "
               >
                 Dashboard
               </Link>
@@ -251,6 +290,7 @@ export default function Navbar() {
               </div>
             </>
           )}
+
           <Link
             href="/book"
             onClick={() => setIsOpen(false)}

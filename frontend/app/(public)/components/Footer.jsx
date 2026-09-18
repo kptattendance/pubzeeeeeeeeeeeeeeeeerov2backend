@@ -10,23 +10,62 @@ export default function Footer() {
 
       {/* MAIN FOOTER */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-16 py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 text-center md:text-left">
+
         {/* BRAND */}
         <div className="flex flex-col items-center md:items-start">
-          <Link href="/">
-            <h2 className="text-3xl font-extrabold mb-5 tracking-wide">
+          <Link href="/" className="inline-block">
+            
+            {/* BRAND NAME */}
+            <div className="flex flex-col items-center md:items-start mb-5">
+              <h2 className="text-3xl font-extrabold tracking-wide leading-none">
+                <span
+                  className="text-[#F5EBDD]"
+                  style={{
+                    textShadow: `
+                      0 0 8px rgba(245,235,221,0.45),
+                      0 0 18px rgba(232,216,195,0.25)
+                    `,
+                  }}
+                >
+                  Zero
+                </span>{" "}
+                <span
+                  className="text-[#FFFFFF]"
+                  style={{
+                    textShadow: `
+                      0 0 8px rgba(255,255,255,0.25),
+                      0 0 16px rgba(255,255,255,0.12)
+                    `,
+                  }}
+                >
+                  Degree
+                </span>
+              </h2>
+
+              {/* COMPANY NAME */}
               <span
-                className="text-[#F5EBDD]"
+                className="
+                  mt-2
+                  text-[8px]
+                  md:text-[9px]
+                  tracking-[0.13em]
+                  uppercase
+                  font-semibold
+                  text-[#F5EBDD]
+                  whitespace-nowrap
+                  leading-tight
+                "
                 style={{
                   textShadow: `
-                    0 0 8px rgba(245,235,221,0.45),
-                    0 0 18px rgba(232,216,195,0.25)
+                    0 1px 4px rgba(0,0,0,0.8),
+                    0 0 8px rgba(245,235,221,0.15)
                   `,
                 }}
               >
-                Zero
-              </span>{" "}
-              <span className="text-[#FFFFFF]">Degree</span>
-            </h2>
+                Six Sigma Brew and Hospitality LLP
+              </span>
+            </div>
+
           </Link>
 
           <p className="text-[#D9C7B2] text-sm leading-8 mb-5 max-w-xs">
@@ -43,7 +82,9 @@ export default function Footer() {
 
         {/* LEGAL */}
         <div className="flex flex-col items-center md:items-start">
-          <h3 className="text-xl font-semibold mb-5 text-[#F5EBDD]">Legal</h3>
+          <h3 className="text-xl font-semibold mb-5 text-[#F5EBDD]">
+            Legal
+          </h3>
 
           <ul className="space-y-3 text-[#D9C7B2] text-sm">
             <li>
@@ -86,7 +127,9 @@ export default function Footer() {
 
         {/* EXPLORE */}
         <div className="hidden md:flex flex-col">
-          <h3 className="text-xl font-semibold mb-5 text-[#F5EBDD]">Explore</h3>
+          <h3 className="text-xl font-semibold mb-5 text-[#F5EBDD]">
+            Explore
+          </h3>
 
           <ul className="space-y-3 text-[#D9C7B2] text-sm">
             <li>
@@ -175,7 +218,9 @@ export default function Footer() {
 
       {/* BOTTOM BAR */}
       <div className="relative z-10 border-t border-[#E8D8C3]/10 py-6 px-6 md:px-16 flex flex-col md:flex-row justify-between items-center text-sm text-[#C5B19A] text-center">
-        <p>© {new Date().getFullYear()} Zero Degree. All rights reserved.</p>
+    <p>
+  © {new Date().getFullYear()} Zero Degree — Six Sigma Brew and Hospitality LLP. All rights reserved.
+</p>
 
         <p className="mt-2 md:mt-0">
           Designed with 🍻 for unforgettable nights

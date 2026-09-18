@@ -64,7 +64,7 @@ export default function Hero() {
       `,
                 }}
               >
-                Zero Degree
+               Zero Degree
               </span>
             </span>
 
