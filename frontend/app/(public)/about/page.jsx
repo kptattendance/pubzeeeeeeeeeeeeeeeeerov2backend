@@ -47,20 +47,35 @@ export default function AboutPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.9 }}
           >
-            <h1 className="text-5xl md:text-6xl font-extrabold leading-tight mb-10">
-              About{" "}
-              <span
-                className="text-[#F5EBDD]"
-                style={{
-                  textShadow: `
-                    0 0 10px rgba(245,235,221,0.45),
-                    0 0 28px rgba(232,216,195,0.25)
-                  `,
-                }}
-              >
-                Zero Degree
-              </span>
-            </h1>
+          <h1 className="text-5xl md:text-6xl font-extrabold leading-tight mb-10">
+  About{" "}
+  <span
+    className="text-[#F5EBDD]"
+    style={{
+      textShadow: `
+        0 0 10px rgba(245,235,221,0.45),
+        0 0 28px rgba(232,216,195,0.25)
+      `,
+    }}
+  >
+    Zero Degree
+  </span>
+
+  <span
+    className="
+      block
+      mt-3
+      text-[10px]
+      md:text-xs
+      tracking-[0.18em]
+      uppercase
+      font-semibold
+      text-[#C8AE8D]
+    "
+  >
+    Six Sigma Brew and Hospitality LLP
+  </span>
+</h1>
 
             <p className="text-[#E6D5C3] leading-9 mb-7 text-lg">
               Zero Degree Brewery & Kitchen is designed as a refined destination

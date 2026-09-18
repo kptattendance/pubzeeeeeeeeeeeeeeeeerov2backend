@@ -50,71 +50,71 @@ export default function Navbar() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
         {/* LOGO */}
-        <Link href="/" className="flex items-center gap-3">
-          <motion.div
-            whileHover={{ scale: 1.03 }}
-            className="flex items-center gap-3 cursor-pointer"
-          >
-            {/* LOGO IMAGE */}
-            <img
-              src="/images/logo.png"
-              alt="Zero Degree Logo"
-              className="w-10 h-10 md:w-12 md:h-12 object-contain"
-            />
-
-            {/* LOGO TEXT */}
-           {/* LOGO TEXT */}
-<div className="flex flex-col justify-center">
-  <h1 className="text-2xl md:text-3xl font-extrabold tracking-wide leading-none">
-    <span
-      className="text-[#F5EBDD]"
-      style={{
-        textShadow: `
-          0 0 8px rgba(245,235,221,0.45),
-          0 0 18px rgba(232,216,195,0.25)
-        `,
-      }}
-    >
-      Zero
-    </span>{" "}
-    <span
-      className="text-white"
-      style={{
-        textShadow: `
-          0 0 8px rgba(255,255,255,0.35),
-          0 0 16px rgba(255,255,255,0.18)
-        `,
-      }}
-    >
-      Degree
-    </span>
-  </h1>
-
-  {/* COMPANY NAME */}
-  <span
-    className="
-      mt-1
-      text-[8px]
-      md:text-[10px]
-      tracking-[0.14em]
-      uppercase
-      font-semibold
-      text-[#F5EBDD]
-      whitespace-nowrap
-      leading-tight
-    "
-    style={{
-      textShadow: `
-        0 1px 4px rgba(0,0,0,0.9),
-        0 0 8px rgba(245,235,221,0.25)
-      `,
-    }}
+    {/* LOGO */}
+<Link href="/" className="flex items-center gap-4">
+  <motion.div
+    whileHover={{ scale: 1.03 }}
+    className="flex items-center gap-4 cursor-pointer"
   >
-    Six Sigma Brew and Hospitality LLP
-  </span>
-</div>
-          </motion.div>
-        </Link>
+    {/* LOGO IMAGE */}
+    <img
+      src="/images/logo22.png"
+      alt="Zero Degree Logo"
+      className="w-16 h-16 md:w-20 md:h-20 object-contain"
+    />
+
+    {/* LOGO TEXT */}
+    <div className="flex flex-col justify-center">
+      <h1 className="text-2xl md:text-3xl font-extrabold tracking-wide leading-none">
+        <span
+          className="text-[#F5EBDD]"
+          style={{
+            textShadow: `
+              0 0 8px rgba(245,235,221,0.45),
+              0 0 18px rgba(232,216,195,0.25)
+            `,
+          }}
+        >
+          Zero
+        </span>{" "}
+        <span
+          className="text-white"
+          style={{
+            textShadow: `
+              0 0 8px rgba(255,255,255,0.35),
+              0 0 16px rgba(255,255,255,0.18)
+            `,
+          }}
+        >
+          Degree
+        </span>
+      </h1>
+
+      {/* COMPANY NAME */}
+      <span
+        className="
+          mt-1
+          text-[8px]
+          md:text-[10px]
+          tracking-[0.14em]
+          uppercase
+          font-semibold
+          text-[#F5EBDD]
+          whitespace-nowrap
+          leading-tight
+        "
+        style={{
+          textShadow: `
+            0 1px 4px rgba(0,0,0,0.9),
+            0 0 8px rgba(245,235,221,0.25)
+          `,
+        }}
+      >
+        Six Sigma Brew and Hospitality LLP
+      </span>
+    </div>
+  </motion.div>
+</Link>
 
         {/* DESKTOP MENU */}
         <div className="hidden md:flex gap-10 items-center">
