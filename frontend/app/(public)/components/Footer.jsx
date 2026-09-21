@@ -219,7 +219,8 @@ export default function Footer() {
       {/* BOTTOM BAR */}
       <div className="relative z-10 border-t border-[#E8D8C3]/10 py-6 px-6 md:px-16 flex flex-col md:flex-row justify-between items-center text-sm text-[#C5B19A] text-center">
     <p>
-  © {new Date().getFullYear()} Zero Degree — Six Sigma Brew and Hospitality LLP. All rights reserved.
+  © {new Date().getFullYear()} Zero Degree (A Unit of Six Sigma Brew and Hospitality LLP). All rights reserved.
+  
 </p>
 
         <p className="mt-2 md:mt-0">
