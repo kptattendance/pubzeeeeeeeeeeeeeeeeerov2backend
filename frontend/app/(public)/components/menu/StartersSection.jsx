@@ -6,7 +6,7 @@ const starters = [
   {
     name: "Paneer Popcorn",
     desc: "Crispy fried paneer cubes coated with herbs and spices.",
-    img: "/images/food/1.png",
+    img: "/images/food/1.webp",
     price: 220,
     type: "veg",
     spicy: false,
@@ -14,7 +14,7 @@ const starters = [
   {
     name: "Chicken Popcorn",
     desc: "Golden fried chicken bites served with signature dip.",
-    img: "/images/food/2.png",
+    img: "/images/food/2.webp",
     price: 260,
     type: "nonveg",
     spicy: false,
@@ -22,7 +22,7 @@ const starters = [
   {
     name: "Chicken Strips Peri Peri",
     desc: "Crispy strips tossed in fiery peri peri seasoning.",
-    img: "/images/food/3.png",
+    img: "/images/food/3.webp",
     price: 280,
     type: "nonveg",
     spicy: true,
@@ -30,7 +30,7 @@ const starters = [
   {
     name: "Corn Cheese Balls",
     desc: "Cheesy corn bites with crispy golden coating.",
-    img: "/images/food/2.png",
+    img: "/images/food/2.webp",
     price: 240,
     type: "veg",
     spicy: false,
@@ -38,7 +38,7 @@ const starters = [
   {
     name: "Dragon Chicken",
     desc: "Spicy Indo-Chinese chicken tossed in bold sauces.",
-    img: "/images/food/3.png",
+    img: "/images/food/3.webp",
     price: 320,
     type: "nonveg",
     spicy: true,
@@ -46,7 +46,7 @@ const starters = [
   {
     name: "Mushroom Pepper Fry",
     desc: "Pepper-spiced mushrooms sautéed with herbs.",
-    img: "/images/food/1.png",
+    img: "/images/food/1.webp",
     price: 260,
     type: "veg",
     spicy: true,
@@ -140,6 +140,8 @@ export default function StartersSection({ filter, search }) {
               <div className="relative h-72 overflow-hidden">
                 <img
                   src={item.img}
+                  loading="lazy"
+                  decoding="async"
                   alt={item.name}
                   className="
                     w-full h-full object-cover

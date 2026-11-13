@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import api from "@/services/api";
+import { optimizeImage } from "@/services/image";
 
 import { Loader2, CalendarDays } from "lucide-react";
 
@@ -230,7 +231,9 @@ export default function GalleryGrid() {
                 >
                   {/* IMAGE */}
                   <img
-                    src={item.image}
+                    src={optimizeImage(item.image, 700)}
+                    loading="lazy"
+                    decoding="async"
                     alt={item.title}
                     className="
   w-full
@@ -390,7 +393,7 @@ export default function GalleryGrid() {
               >
                 {/* IMAGE */}
                 <img
-                  src={selected.image}
+                  src={optimizeImage(selected.image, 1600)}
                   alt={selected.title}
                   className="
                     w-full

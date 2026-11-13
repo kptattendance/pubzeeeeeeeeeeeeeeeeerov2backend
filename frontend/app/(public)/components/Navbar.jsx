@@ -58,7 +58,7 @@ export default function Navbar() {
   >
     {/* LOGO IMAGE */}
     <img
-      src="/images/logo22.png"
+      src="/images/logo22.webp"
       alt="Zero Degree Logo"
       className="w-16 h-16 md:w-20 md:h-20 object-contain"
     />

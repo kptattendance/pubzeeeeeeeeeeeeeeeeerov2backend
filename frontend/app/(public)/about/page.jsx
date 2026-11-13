@@ -25,7 +25,7 @@ export default function AboutPage() {
             <div className="absolute inset-0 rounded-[36px] bg-[#9C7B57]/10 blur-3xl scale-105" />
 
             <img
-              src="/images/real/5.jpeg"
+              src="/images/real/5.webp"
               alt="Zero Degree ambience"
               className="
                 relative z-10
@@ -238,17 +238,17 @@ export default function AboutPage() {
               {
                 title: "Elegant Ambience",
                 desc: "Warm interiors with premium brewery aesthetics.",
-                img: "/images/gallery/1.png",
+                img: "/images/gallery/1.webp",
               },
               {
                 title: "Curated Music",
                 desc: "Live DJs and immersive nightlife experiences.",
-                img: "/images/gallery/8.png",
+                img: "/images/gallery/8.webp",
               },
               {
                 title: "Signature Dining",
                 desc: "Crafted cuisine paired with premium beverages.",
-                img: "/images/gallery/6.png",
+                img: "/images/gallery/6.webp",
               },
             ].map((item, i) => (
               <motion.div
@@ -263,6 +263,8 @@ export default function AboutPage() {
               >
                 <img
                   src={item.img}
+                  loading="lazy"
+                  decoding="async"
                   alt={item.title}
                   className="
                     h-80 w-full object-cover

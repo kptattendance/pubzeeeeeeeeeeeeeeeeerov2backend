@@ -8,7 +8,7 @@ export default function Hero() {
     <section className="relative w-full h-screen overflow-hidden bg-[#1F1713]">
       {/* BACKGROUND IMAGE */}
       <img
-        src="/images/hero.png"
+        src="/images/hero.webp"
         alt="background"
         className="absolute w-full h-full object-cover"
       />

@@ -4,11 +4,11 @@ import Link from "next/link";
 
 export default function GalleryPreview() {
   const images = [
-    "/images/real/1.jpeg",
-    // "/images/real/3.jpeg",
-    "/images/real/4.jpeg",
-    "/images/real/5.jpeg",
-    "/images/real/6.jpeg",
+    "/images/real/1.webp",
+    // "/images/real/3.webp",
+    "/images/real/4.webp",
+    "/images/real/5.webp",
+    "/images/real/6.webp",
   ];
 
   return (
@@ -50,6 +50,8 @@ export default function GalleryPreview() {
             >
               <img
                 src={src}
+                loading="lazy"
+                decoding="async"
                 alt={`Gallery ${i + 1}`}
                 className="
                   rounded-2xl

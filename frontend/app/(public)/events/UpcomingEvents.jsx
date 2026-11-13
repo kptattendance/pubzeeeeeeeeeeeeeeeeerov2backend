@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import api from "../../../services/api";
+import { optimizeImage } from "../../../services/image";
 
 export default function UpcomingEvents() {
   const [events, setEvents] = useState([]);
@@ -99,7 +100,9 @@ export default function UpcomingEvents() {
                 {/* IMAGE */}
                 <div className="relative overflow-hidden">
                   <img
-                    src={event.image}
+                    src={optimizeImage(event.image, 800)}
+                    loading="lazy"
+                    decoding="async"
                     alt={event.title}
                     className="
                         h-72 w-full object-cover

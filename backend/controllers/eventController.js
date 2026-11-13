@@ -65,6 +65,8 @@ export const createEvent = async (req, res) => {
 
       const uploadedImage = await cloudinary.uploader.upload(dataURI, {
         folder: "pub-events",
+        // shrink huge phone photos before storing
+        transformation: [{ width: 2000, height: 2000, crop: "limit", quality: "auto:good" }],
       });
 
       imageData = {
@@ -127,6 +129,8 @@ export const updateEvent = async (req, res) => {
 
       const uploadedImage = await cloudinary.uploader.upload(dataURI, {
         folder: "pub-events",
+        // shrink huge phone photos before storing
+        transformation: [{ width: 2000, height: 2000, crop: "limit", quality: "auto:good" }],
       });
 
       imageUrl = uploadedImage.secure_url;
