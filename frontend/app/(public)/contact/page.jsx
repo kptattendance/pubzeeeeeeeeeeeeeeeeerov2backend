@@ -1,8 +1,41 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
+import Swal from "sweetalert2";
+import { SITE, whatsappLink } from "@/lib/site";
 
 export default function ContactPage() {
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+
+  const update = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (form.name.trim().length < 2 || form.message.trim().length < 5) {
+      Swal.fire({
+        icon: "warning",
+        title: "Almost there",
+        text: "Please add your name and a short message",
+        background: "#241B17",
+        color: "#F8F1E7",
+        confirmButtonColor: "#9C7B57",
+      });
+      return;
+    }
+
+    const text = `👋 *Website Enquiry*
+
+Name: ${form.name.trim()}${form.email.trim() ? `
+Email: ${form.email.trim()}` : ""}
+
+${form.message.trim()}`;
+
+    // same-tab navigation opens the WhatsApp app on phones and is never popup-blocked
+    window.location.href = whatsappLink(text);
+  };
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#1A1411] via-[#241B17] to-[#1A1411] text-[#F8F1E7] pt-32 pb-24 px-6 md:px-16">
       {/* GLOBAL AMBIENT GLOW */}
@@ -15,7 +48,7 @@ export default function ContactPage() {
       <section className="relative z-10 max-w-7xl mx-auto">
         {/* PAGE TITLE */}
         <div className="text-center mb-20">
-          <h1 className="text-5xl md:text-7xl font-extrabold mb-6">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold mb-6">
             Contact{" "}
             <span
               className="text-[#F5EBDD]"
@@ -50,14 +83,16 @@ export default function ContactPage() {
               via-[#241B17]
               to-[#1A1411]
               shadow-[0_25px_80px_rgba(0,0,0,0.4)]
-              min-h-[650px]
+              min-h-[560px] md:min-h-[650px]
             "
           >
             {/* MAP */}
             <iframe
               className="absolute inset-0 w-full h-full opacity-70"
               frameBorder="0"
-              title="map"
+              title="Map showing Zero Degree Brewery & Kitchen location"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2346.1385927646497!2d77.52065461574493!3d12.917595622894094!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae3face64ecd29%3A0x59a7f7f88ae47b89!2sBEML%20Layout%2C%20Rajarajeshwari%20Nagar%2C%20Bengaluru%2C%20Karnataka%20560098!5e1!3m2!1sen!2sin!4v1776354220621!5m2!1sen!2sin"
               style={{
                 filter:
@@ -69,7 +104,7 @@ export default function ContactPage() {
             <div className="absolute inset-0 bg-gradient-to-t from-[#1A1411]/95 via-[#1A1411]/50 to-transparent" />
 
             {/* INFO CARD */}
-            <div className="relative z-10 h-full flex items-end p-8">
+            <div className="relative z-10 h-full flex items-end p-3 sm:p-8">
               <div
                 className="
                   w-full
@@ -77,7 +112,7 @@ export default function ContactPage() {
                   bg-[#2B211B]/75
                   backdrop-blur-2xl
                   border border-[#E8D8C3]/10
-                  p-8
+                  p-6 sm:p-8
                   shadow-[0_15px_50px_rgba(0,0,0,0.3)]
                 "
               >
@@ -88,13 +123,21 @@ export default function ContactPage() {
                       Address
                     </h2>
 
-                    <p className="text-[#F8F1E7] leading-8">
+                    <address className="not-italic text-[#F8F1E7] leading-8">
                       Zero Degree Brewery & Kitchen,
                       <br />
                       BEML Layout, Rajarajeshwari Nagar,
                       <br />
                       Bengaluru, Karnataka - 560098
-                    </p>
+                    </address>
+                    <a
+                      href={SITE.mapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#9C7B57] hover:bg-[#B08A61] px-5 py-2.5 text-sm font-semibold text-[#F8F1E7] transition"
+                    >
+                      Get Directions →
+                    </a>
                   </div>
 
                   {/* CONTACT */}
@@ -109,9 +152,9 @@ export default function ContactPage() {
                           Email
                         </p>
 
-                        <p className="text-[#F5EBDD]">
-                          info@zerodegreebreweryandkitchen.com
-                        </p>
+                        <a href={`mailto:${SITE.email}`} className="text-[#F5EBDD] hover:text-white underline-offset-4 hover:underline break-all">
+                          {SITE.email}
+                        </a>
                       </div>
 
                       <div>
@@ -119,7 +162,9 @@ export default function ContactPage() {
                           Phone
                         </p>
 
-                        <p className="text-[#F5EBDD]">+91 99864 66266</p>
+                        <a href={`tel:${SITE.phoneTel}`} className="text-[#F5EBDD] hover:text-white underline-offset-4 hover:underline">
+                          {SITE.phoneDisplay}
+                        </a>
                       </div>
 
                       <div>
@@ -149,7 +194,7 @@ export default function ContactPage() {
               from-[#32251E]
               via-[#241B17]
               to-[#1A1411]
-              p-8 md:p-10
+              p-6 sm:p-8 md:p-10
               backdrop-blur-2xl
               shadow-[0_25px_80px_rgba(0,0,0,0.4)]
             "
@@ -179,9 +224,16 @@ export default function ContactPage() {
               </p>
 
               {/* FORM */}
-              <div className="space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-5">
                 <input
                   type="text"
+                  name="name"
+                  value={form.name}
+                  onChange={update}
+                  required
+                  maxLength={60}
+                  autoComplete="name"
+                  aria-label="Your name"
                   placeholder="Your Name"
                   className="
                     w-full p-4 rounded-2xl
@@ -197,7 +249,13 @@ export default function ContactPage() {
 
                 <input
                   type="email"
-                  placeholder="Your Email"
+                  name="email"
+                  value={form.email}
+                  onChange={update}
+                  maxLength={100}
+                  autoComplete="email"
+                  aria-label="Your email (optional)"
+                  placeholder="Your Email (optional)"
                   className="
                     w-full p-4 rounded-2xl
                     bg-[#2B211B]/70
@@ -212,6 +270,12 @@ export default function ContactPage() {
 
                 <textarea
                   rows="5"
+                  name="message"
+                  value={form.message}
+                  onChange={update}
+                  required
+                  maxLength={1000}
+                  aria-label="Your message"
                   placeholder="Your Message"
                   className="
                     w-full p-4 rounded-2xl
@@ -228,6 +292,7 @@ export default function ContactPage() {
 
                 {/* BUTTON */}
                 <button
+                  type="submit"
                   className="
                     w-full py-4 rounded-full
                     bg-[#9C7B57]
@@ -239,12 +304,15 @@ export default function ContactPage() {
                     shadow-[0_0_24px_rgba(156,123,87,0.35)]
                   "
                 >
-                  Send Message
+                  Send via WhatsApp
                 </button>
-              </div>
+              </form>
 
               <p className="text-xs text-[#BCA894] mt-5 text-center">
-                We typically respond within a few hours.
+                We typically respond within a few hours. Prefer a call?{" "}
+                <a href={`tel:${SITE.phoneTel}`} className="underline hover:text-white">
+                  {SITE.phoneDisplay}
+                </a>
               </p>
             </div>
           </motion.div>

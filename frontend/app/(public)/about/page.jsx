@@ -47,7 +47,7 @@ export default function AboutPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.9 }}
           >
-          <h1 className="text-5xl md:text-6xl font-extrabold leading-tight mb-10">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight mb-10">
   About{" "}
   <span
     className="text-[#F5EBDD]"

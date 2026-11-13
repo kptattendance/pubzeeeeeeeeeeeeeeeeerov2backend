@@ -12,6 +12,8 @@ import upload from "../middleware/uploadMiddleware.js";
 
 import { protectAdmin } from "../middleware/authMiddleware.js";
 
+import { writeLimiter } from "../middleware/rateLimit.js";
+
 const router = express.Router();
 
 // ==========================================
@@ -24,11 +26,11 @@ router.route("/:id").get(getSingleGalleryItem);
 // ==========================================
 // ADMIN ROUTES
 // ==========================================
-router.route("/").post(protectAdmin, upload.single("image"), createGalleryItem);
+router.route("/").post(writeLimiter, protectAdmin, upload.single("image"), createGalleryItem);
 
 router
   .route("/:id")
-  .put(protectAdmin, upload.single("image"), updateGalleryItem)
-  .delete(protectAdmin, deleteGalleryItem);
+  .put(writeLimiter, protectAdmin, upload.single("image"), updateGalleryItem)
+  .delete(writeLimiter, protectAdmin, deleteGalleryItem);
 
 export default router;

@@ -7,8 +7,9 @@ export default function EventsHero() {
     <section className="relative h-[75vh] overflow-hidden">
       {/* BACKGROUND IMAGE */}
       <img
-        src="/images/events-bg.jpg"
-        alt="Events Background"
+        src="/images/real/7.webp"
+        fetchPriority="high"
+        alt=""
         className="absolute inset-0 w-full h-full object-cover scale-105"
       />
 
@@ -25,7 +26,7 @@ export default function EventsHero() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-5xl md:text-7xl font-extrabold leading-tight"
+          className="text-4xl sm:text-5xl md:text-7xl font-extrabold leading-tight"
         >
           Events &{" "}
           <span

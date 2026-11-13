@@ -17,7 +17,7 @@ export default function PrivacyPage() {
         <motion.h1
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-5xl md:text-7xl font-extrabold leading-tight"
+          className="text-4xl sm:text-5xl md:text-7xl font-extrabold leading-tight"
         >
           Privacy{" "}
           <span

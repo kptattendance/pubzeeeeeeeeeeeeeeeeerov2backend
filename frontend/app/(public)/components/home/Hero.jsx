@@ -9,7 +9,7 @@ export default function Hero() {
       {/* BACKGROUND IMAGE */}
       <img
         src="/images/hero.webp"
-        alt="background"
+        alt=""
         className="absolute w-full h-full object-cover"
       />
 
@@ -95,14 +95,12 @@ export default function Hero() {
           className="mt-8 flex flex-col sm:flex-row gap-4"
         >
           {/* MENU BUTTON */}
-          <Link href="/menu">
-            <button className="relative px-7 py-3 rounded-full font-semibold text-white bg-[#8A7356] hover:bg-[#735F47] transition-all duration-300 shadow-lg overflow-hidden group">
+          <Link href="/menu" className="inline-block relative px-7 py-3 rounded-full font-semibold text-white bg-[#8A7356] hover:bg-[#735F47] transition-all duration-300 shadow-lg overflow-hidden group">
               <span className="relative z-10">Explore Menu</span>
 
               {/* subtle glow */}
               <span className="absolute inset-0 bg-[#E8D8C3] blur-md opacity-20 group-hover:opacity-30 transition duration-300"></span>
-            </button>
-          </Link>
+            </Link>
 
           {/* BOOK BUTTON */}
           <Link

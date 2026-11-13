@@ -40,6 +40,25 @@ export default function GalleryGrid() {
   }, []);
 
   // ==========================================
+  // LIGHTBOX: Esc to close + stop background scroll
+  // ==========================================
+  useEffect(() => {
+    if (!selected) return;
+
+    const onKey = (e) => {
+      if (e.key === "Escape") setSelected(null);
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [selected]);
+
+  // ==========================================
   // DYNAMIC FILTERS
   // ==========================================
   const filters = useMemo(() => {
@@ -228,6 +247,15 @@ export default function GalleryGrid() {
                       bg-[#241B17]
                     "
                   onClick={() => setSelected(item)}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Open photo: ${item.title}`}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setSelected(item);
+                    }
+                  }}
                 >
                   {/* IMAGE */}
                   <img
@@ -465,6 +493,8 @@ export default function GalleryGrid() {
 
               {/* CLOSE BUTTON */}
               <button
+                type="button"
+                aria-label="Close photo"
                 onClick={() => setSelected(null)}
                 className="
                   absolute top-6 right-6

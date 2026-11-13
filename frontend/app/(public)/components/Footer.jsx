@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { MessageCircle, Phone, MapPin, Mail } from "lucide-react";
+import { SITE, whatsappLink } from "@/lib/site";
 
 export default function Footer() {
   return (
@@ -73,11 +75,19 @@ export default function Footer() {
             blend of taste, music, and ambience.
           </p>
 
-          <div className="space-y-2 text-[#E6D5C3] text-sm">
-            <p>📧 info@zerodegreebreweryandkitchen.com</p>
-            <p>📞 +91 99864 66266</p>
-            <p>📍 Bengaluru, Karnataka</p>
-          </div>
+          <address className="not-italic space-y-3 text-[#E6D5C3] text-sm">
+            <a href={`mailto:${SITE.email}`} className="flex items-center justify-center md:justify-start gap-2 hover:text-white transition break-all">
+              <Mail size={16} className="shrink-0" /> {SITE.email}
+            </a>
+            <a href={`tel:${SITE.phoneTel}`} className="flex items-center justify-center md:justify-start gap-2 hover:text-white transition">
+              <Phone size={16} className="shrink-0" /> {SITE.phoneDisplay}
+            </a>
+            <a href={SITE.mapsUrl} target="_blank" rel="noopener noreferrer" className="flex items-start justify-center md:justify-start gap-2 hover:text-white transition">
+              <MapPin size={16} className="shrink-0 mt-0.5" />
+              <span>{SITE.address.line1}, {SITE.address.city} - {SITE.address.pincode}</span>
+            </a>
+            <p className="text-[#BCA894]">Open {SITE.hoursDisplay}</p>
+          </address>
         </div>
 
         {/* LEGAL */}
@@ -126,7 +136,7 @@ export default function Footer() {
         </div>
 
         {/* EXPLORE */}
-        <div className="hidden md:flex flex-col">
+        <div className="flex flex-col items-center md:items-start">
           <h3 className="text-xl font-semibold mb-5 text-[#F5EBDD]">
             Explore
           </h3>
@@ -177,22 +187,23 @@ export default function Footer() {
           </h3>
 
           <p className="text-[#D9C7B2] text-sm mb-5">
-            Follow us for latest events & offers
+            Reach us instantly for bookings, events & offers
           </p>
 
           {/* SOCIAL ICONS */}
-          <div className="flex gap-5 mb-6 justify-center md:justify-start text-2xl">
-            <span className="cursor-pointer hover:scale-110 hover:text-[#F5EBDD] transition duration-300">
-              🌐
-            </span>
-
-            <span className="cursor-pointer hover:scale-110 hover:text-[#F5EBDD] transition duration-300">
-              📸
-            </span>
-
-            <span className="cursor-pointer hover:scale-110 hover:text-[#F5EBDD] transition duration-300">
-              🎵
-            </span>
+          <div className="flex gap-3 mb-6 justify-center md:justify-start">
+            <a href={whatsappLink("Hi Zero Degree!")} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="h-11 w-11 rounded-full border border-[#E8D8C3]/15 bg-[#241B17] flex items-center justify-center hover:bg-[#32251E] hover:text-white transition">
+              <MessageCircle size={20} />
+            </a>
+            <a href={`tel:${SITE.phoneTel}`} aria-label="Call us" className="h-11 w-11 rounded-full border border-[#E8D8C3]/15 bg-[#241B17] flex items-center justify-center hover:bg-[#32251E] hover:text-white transition">
+              <Phone size={20} />
+            </a>
+            <a href={SITE.mapsUrl} target="_blank" rel="noopener noreferrer" aria-label="Get directions" className="h-11 w-11 rounded-full border border-[#E8D8C3]/15 bg-[#241B17] flex items-center justify-center hover:bg-[#32251E] hover:text-white transition">
+              <MapPin size={20} />
+            </a>
+            <a href={`mailto:${SITE.email}`} aria-label="Email us" className="h-11 w-11 rounded-full border border-[#E8D8C3]/15 bg-[#241B17] flex items-center justify-center hover:bg-[#32251E] hover:text-white transition">
+              <Mail size={20} />
+            </a>
           </div>
 
           {/* BUTTON */}
@@ -217,14 +228,17 @@ export default function Footer() {
       </div>
 
       {/* BOTTOM BAR */}
-      <div className="relative z-10 border-t border-[#E8D8C3]/10 py-6 px-6 md:px-16 flex flex-col md:flex-row justify-between items-center text-sm text-[#C5B19A] text-center">
+      <div className="relative z-10 border-t border-[#E8D8C3]/10 pt-6 pb-24 md:pb-6 px-6 md:px-16 flex flex-col md:flex-row justify-between items-center gap-2 text-sm text-[#C5B19A] text-center">
     <p>
   © {new Date().getFullYear()} Zero Degree (A Unit of Six Sigma Brew and Hospitality LLP). All rights reserved.
   
 </p>
 
-        <p className="mt-2 md:mt-0">
-          Designed with 🍻 for unforgettable nights
+        <p className="flex items-center gap-3">
+          <span>Please drink responsibly · 21+ only</span>
+          <Link href="/sign-in" className="text-xs text-[#8C7A68] hover:text-[#C5B19A] transition">
+            Staff login
+          </Link>
         </p>
       </div>
     </footer>

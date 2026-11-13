@@ -2,6 +2,17 @@
 
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
+import { SITE, whatsappLink } from "@/lib/site";
+
+// Indian mobile: optional +91 / 0 prefix, then 10 digits starting 6-9
+const cleanPhone = (value) => value.replace(/[^d]/g, "").replace(/^(91|0)(?=d{10}$)/, "");
+const isValidPhone = (value) => /^[6-9]d{9}$/.test(cleanPhone(value));
+
+const swalTheme = {
+  background: "#241B17",
+  color: "#F8F1E7",
+  confirmButtonColor: "#9C7B57",
+};
 
 export default function BookPage() {
   const [form, setForm] = useState({
@@ -16,40 +27,68 @@ export default function BookPage() {
 
   const [loading, setLoading] = useState(false);
 
-  // SET CURRENT DATE & TIME
+  const [minDate, setMinDate] = useState("");
+
+  // DEFAULT: today, next 15-minute slot at least 30 min from now
+  // (falls back to 7:30 PM when we are closed, 1 AM - 12 PM)
   useEffect(() => {
-    const now = new Date();
+    const slot = new Date(Date.now() + 30 * 60 * 1000);
+    slot.setMinutes(Math.ceil(slot.getMinutes() / 15) * 15, 0, 0);
+
+    let hours24 = slot.getHours();
+    let minutes = slot.getMinutes();
+    const isOpen = hours24 >= 12 || hours24 < 1;
+    if (!isOpen) {
+      hours24 = 19;
+      minutes = 30;
+    }
 
     // local date (toISOString is UTC and shows yesterday before 5:30 AM IST)
-    const today = now.toLocaleDateString("en-CA");
+    const today = new Date().toLocaleDateString("en-CA");
 
-    let hour = now.getHours();
-    const minute = now.getMinutes();
-
-    const period = hour >= 12 ? "PM" : "AM";
-
-    hour = hour % 12 || 12;
-
+    // runs after load on purpose: "today" must come from the visitor's clock, not the server
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMinDate(today);
     setForm((prev) => ({
       ...prev,
-      date: today,
-      hour: String(hour).padStart(2, "0"),
-      minute: String(minute).padStart(2, "0"),
-      period,
+      date: isOpen ? slot.toLocaleDateString("en-CA") : today,
+      hour: String(hours24 % 12 || 12).padStart(2, "0"),
+      minute: String(minutes).padStart(2, "0"),
+      period: hours24 >= 12 ? "PM" : "AM",
     }));
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!form.name || !form.phone || !form.date) {
+    if (form.name.trim().length < 2 || !form.phone || !form.date) {
       Swal.fire({
         icon: "warning",
         title: "Missing Details",
-        text: "Please fill all fields",
-        background: "#241B17",
-        color: "#F8F1E7",
-        confirmButtonColor: "#9C7B57",
+        text: "Please enter your name, phone number and date",
+        ...swalTheme,
+      });
+
+      return;
+    }
+
+    if (!isValidPhone(form.phone)) {
+      Swal.fire({
+        icon: "warning",
+        title: "Check Phone Number",
+        text: "Please enter a valid 10-digit mobile number",
+        ...swalTheme,
+      });
+
+      return;
+    }
+
+    if (minDate && form.date < minDate) {
+      Swal.fire({
+        icon: "warning",
+        title: "Check Date",
+        text: "Please choose today or a future date",
+        ...swalTheme,
       });
 
       return;
@@ -61,28 +100,25 @@ export default function BookPage() {
 
     const message = `🍻 *Table Booking Request*
 
-Name: ${form.name}
-Phone: ${form.phone}
+Name: ${form.name.trim()}
+Phone: +91 ${cleanPhone(form.phone)}
 Date: ${form.date}
 Time: ${timeFormatted}
 Guests: ${form.guests}`;
 
-    const url = `https://wa.me/919986466266?text=${encodeURIComponent(message)}`;
+    const url = whatsappLink(message);
 
-    setTimeout(() => {
+    Swal.fire({
+      icon: "success",
+      title: "Opening WhatsApp...",
+      text: "Just tap Send in WhatsApp to confirm your booking",
+      ...swalTheme,
+    }).then(() => {
       setLoading(false);
-
-      Swal.fire({
-        icon: "success",
-        title: "Redirecting to WhatsApp...",
-        text: "Click send to confirm your booking",
-        background: "#241B17",
-        color: "#F8F1E7",
-        confirmButtonColor: "#9C7B57",
-      }).then(() => {
-        window.open(url, "_blank", "noopener,noreferrer");
-      });
-    }, 800);
+      // same-tab navigation: popup blockers (esp. iPhone Safari) block window.open
+      // after an async dialog, but always allow this - and it opens the WhatsApp app
+      window.location.href = url;
+    });
   };
 
   return (
@@ -142,6 +178,11 @@ Guests: ${form.guests}`;
           {/* NAME */}
           <input
             placeholder="Your Name"
+            aria-label="Your name"
+            name="name"
+            autoComplete="name"
+            required
+            maxLength={60}
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             className="
@@ -158,7 +199,14 @@ Guests: ${form.guests}`;
 
           {/* PHONE */}
           <input
-            placeholder="Phone Number"
+            placeholder="Mobile Number (10 digits)"
+            aria-label="Mobile number"
+            name="phone"
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            required
+            maxLength={16}
             value={form.phone}
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
             className="
@@ -176,6 +224,9 @@ Guests: ${form.guests}`;
           {/* DATE */}
           <input
             type="date"
+            aria-label="Booking date"
+            required
+            min={minDate || undefined}
             value={form.date}
             onChange={(e) => setForm({ ...form, date: e.target.value })}
             className="
@@ -193,6 +244,7 @@ Guests: ${form.guests}`;
           <div className="flex gap-3">
             {/* HOUR */}
             <select
+              aria-label="Hour"
               value={form.hour}
               onChange={(e) => setForm({ ...form, hour: e.target.value })}
               className="
@@ -207,12 +259,17 @@ Guests: ${form.guests}`;
               {[...Array(12)].map((_, i) => {
                 const val = String(i + 1).padStart(2, "0");
 
-                return <option key={val}>{val}</option>;
+                return (
+                  <option key={val} value={val}>
+                    {val}
+                  </option>
+                );
               })}
             </select>
 
             {/* MINUTES */}
             <select
+              aria-label="Minutes"
               value={form.minute}
               onChange={(e) => setForm({ ...form, minute: e.target.value })}
               className="
@@ -225,12 +282,15 @@ Guests: ${form.guests}`;
               "
             >
               {["00", "15", "30", "45"].map((m) => (
-                <option key={m}>{m}</option>
+                <option key={m} value={m}>
+                  {m}
+                </option>
               ))}
             </select>
 
             {/* PERIOD */}
             <select
+              aria-label="AM or PM"
               value={form.period}
               onChange={(e) => setForm({ ...form, period: e.target.value })}
               className="
@@ -249,6 +309,7 @@ Guests: ${form.guests}`;
 
           {/* GUESTS */}
           <select
+            aria-label="Number of guests"
             value={form.guests}
             onChange={(e) => setForm({ ...form, guests: e.target.value })}
             className="
@@ -261,8 +322,11 @@ Guests: ${form.guests}`;
             "
           >
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((g) => (
-              <option key={g}>{g} Guests</option>
+              <option key={g} value={String(g)}>
+                {g} {g === 1 ? "Guest" : "Guests"}
+              </option>
             ))}
+            <option value="10+ (large group)">10+ Guests (large group)</option>
           </select>
 
           {/* BUTTON */}
@@ -279,7 +343,7 @@ Guests: ${form.guests}`;
 
           {/* CALL */}
           <a
-            href="tel:+919986466266"
+            href={`tel:${SITE.phoneTel}`}
             className="
               block text-center text-sm
               text-[#C5B19A]

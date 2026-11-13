@@ -20,14 +20,15 @@ export default function StickyBooking() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(156,123,87,0.12),transparent_70%)] pointer-events-none" />
 
         {/* TEXT */}
-        <span className="relative z-10 text-sm text-[#D9C7B2] leading-6">
+        <span className="relative z-10 text-xs min-[380px]:text-sm text-[#D9C7B2] leading-5 pr-3">
           Reserve your table for an unforgettable night 🍻
         </span>
 
         {/* BUTTON */}
-        <Link href="/book" className="relative z-10">
-          <button
-            className="
+        <Link
+          href="/book"
+          className="
+              relative z-10 shrink-0
               px-5 py-2.5 rounded-full
               bg-[#9C7B57]
               hover:bg-[#B08A61]
@@ -36,9 +37,8 @@ export default function StickyBooking() {
               transition-all duration-300
               shadow-[0_0_18px_rgba(156,123,87,0.35)]
             "
-          >
+        >
             Book Now
-          </button>
         </Link>
       </div>
     </div>

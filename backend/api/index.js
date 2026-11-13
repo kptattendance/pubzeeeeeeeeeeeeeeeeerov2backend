@@ -6,6 +6,7 @@ import cors from "cors";
 import { clerkMiddleware } from "@clerk/express";
 
 import connectDB from "./../config/db.js";
+import { publicLimiter } from "./../middleware/rateLimit.js";
 
 import eventRoutes from "./../routes/eventRoutes.js";
 import galleryRoutes from "./../routes/galleryRoutes.js";
@@ -50,6 +51,9 @@ app.use(express.json({ limit: "100kb" }));
 app.get("/", (req, res) => {
   res.send("PUB Backend Running...");
 });
+
+// Rate limit every API call per IP (runs before DB/auth work, so abuse is cheap to reject)
+app.use("/api", publicLimiter);
 
 // Make sure the DB is connected before any API route runs
 app.use("/api", async (req, res, next) => {

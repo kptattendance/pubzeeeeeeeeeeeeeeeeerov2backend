@@ -68,11 +68,9 @@ export default function GalleryPreview() {
 
         {/* BUTTON */}
         <div className="text-center mt-10">
-          <Link href="/gallery">
-            <button className="px-7 py-3 rounded-full border border-[#C8AE8D]/40 text-[#F5EBDD] hover:bg-[#8A7356] hover:border-[#8A7356] transition-all duration-300 hover:scale-105 shadow-[0_0_20px_rgba(138,115,86,0.2)]">
+          <Link href="/gallery" className="inline-block px-7 py-3 rounded-full border border-[#C8AE8D]/40 text-[#F5EBDD] hover:bg-[#8A7356] hover:border-[#8A7356] transition-all duration-300 hover:scale-105 shadow-[0_0_20px_rgba(138,115,86,0.2)]">
               Explore Gallery
-            </button>
-          </Link>
+            </Link>
         </div>
       </div>
     </section>

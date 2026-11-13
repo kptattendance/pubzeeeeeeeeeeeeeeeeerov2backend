@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Menu, X, ShieldCheck } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { UserButton, useUser } from "@clerk/nextjs";
 
@@ -29,10 +29,26 @@ export default function Navbar() {
       setScrolled(window.scrollY > 40);
     };
 
-    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // close the mobile menu whenever the page changes
+  const [lastPath, setLastPath] = useState(pathname);
+  if (pathname !== lastPath) {
+    setLastPath(pathname);
+    setIsOpen(false);
+  }
+
+  // stop the page behind the open mobile menu from scrolling
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
 
   return (
     <motion.nav
@@ -48,24 +64,27 @@ export default function Navbar() {
       {/* AMBIENT TOP GLOW */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(156,123,87,0.18),transparent_70%)] pointer-events-none" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-3 md:py-4 flex justify-between items-center gap-3">
         {/* LOGO */}
     {/* LOGO */}
-<Link href="/" className="flex items-center gap-4">
+<Link href="/" className="flex items-center gap-3 md:gap-4 min-w-0" aria-label="Zero Degree - Home">
   <motion.div
     whileHover={{ scale: 1.03 }}
-    className="flex items-center gap-4 cursor-pointer"
+    className="flex items-center gap-3 md:gap-4 cursor-pointer min-w-0"
   >
     {/* LOGO IMAGE */}
     <img
       src="/images/logo22.webp"
-      alt="Zero Degree Logo"
-      className="w-16 h-16 md:w-20 md:h-20 object-contain"
+      alt="Zero Degree logo"
+      width={80}
+      height={80}
+      fetchPriority="high"
+      className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain shrink-0"
     />
 
     {/* LOGO TEXT */}
-    <div className="flex flex-col justify-center">
-      <h1 className="text-2xl md:text-3xl font-extrabold tracking-wide leading-none">
+    <div className="flex flex-col justify-center min-w-0">
+      <span className="block text-xl sm:text-2xl md:text-3xl font-extrabold tracking-wide leading-none">
         <span
           className="text-[#F5EBDD]"
           style={{
@@ -88,15 +107,17 @@ export default function Navbar() {
         >
           Degree
         </span>
-      </h1>
+      </span>
 
       {/* COMPANY NAME */}
       <span
         className="
           mt-1
-          text-[8px]
+          text-[7px]
+          sm:text-[8px]
           md:text-[10px]
-          tracking-[0.14em]
+          tracking-[0.1em]
+          sm:tracking-[0.14em]
           uppercase
           font-semibold
           text-[#F5EBDD]
@@ -117,7 +138,7 @@ export default function Navbar() {
 </Link>
 
         {/* DESKTOP MENU */}
-        <div className="hidden md:flex gap-10 items-center">
+        <div className="hidden md:flex gap-6 lg:gap-10 items-center">
           {navItems.map((item) => {
             const isActive = pathname === item.path;
 
@@ -147,28 +168,8 @@ export default function Navbar() {
 
           {/* BUTTON */}
           <div className="flex items-center gap-4">
-            {!isSignedIn ? (
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Link
-                  href="/sign-in"
-                  className="
-                    px-5 py-3 rounded-full
-                    border border-[#E8D8C3]/15
-                    bg-[#241B17]/70
-                    hover:bg-[#32251E]
-                    text-[#F8F1E7]
-                    font-medium
-                    transition-all duration-300
-                    inline-flex items-center gap-2
-                  "
-                >
-                  <ShieldCheck size={18} />
-                  Admin Login
-                </Link>
-              </motion.div>
+            {!isSignedIn ? null : !isAdmin ? (
+              <UserButton afterSignOutUrl="/" />
             ) : (
               <div className="flex items-center gap-4">
                 <Link
@@ -210,22 +211,27 @@ export default function Navbar() {
         </div>
 
         {/* MOBILE ICON */}
-        <div className="md:hidden text-[#F8F1E7]">
-          {isOpen ? (
-            <X size={30} onClick={() => setIsOpen(false)} />
-          ) : (
-            <Menu size={30} onClick={() => setIsOpen(true)} />
-          )}
-        </div>
+        <button
+          type="button"
+          onClick={() => setIsOpen((open) => !open)}
+          aria-label={isOpen ? "Close menu" : "Open menu"}
+          aria-expanded={isOpen}
+          aria-controls="mobile-menu"
+          className="md:hidden shrink-0 -mr-2 p-2 rounded-full text-[#F8F1E7] focus-visible:outline-2 focus-visible:outline-[#C8AE8D]"
+        >
+          {isOpen ? <X size={28} /> : <Menu size={28} />}
+        </button>
       </div>
 
       {/* MOBILE MENU */}
       {isOpen && (
         <motion.div
+          id="mobile-menu"
           initial={{ opacity: 0, y: -25 }}
           animate={{ opacity: 1, y: 0 }}
           className="
             md:hidden
+            max-h-[calc(100svh-72px)] overflow-y-auto
             bg-[#241B17]/95
             backdrop-blur-2xl
             border-t border-[#E8D8C3]/10
@@ -251,22 +257,10 @@ export default function Navbar() {
             );
           })}
 
-          {!isSignedIn ? (
-            <Link
-              href="/sign-in"
-              onClick={() => setIsOpen(false)}
-              className="
-                block w-full text-center
-                border border-[#E8D8C3]/10
-                bg-[#241B17]
-                text-[#F8F1E7]
-                py-3 rounded-full
-                font-semibold
-                transition-all duration-300
-              "
-            >
-              Admin Login
-            </Link>
+          {!isSignedIn ? null : !isAdmin ? (
+            <div className="flex justify-center pt-2">
+              <UserButton afterSignOutUrl="/" />
+            </div>
           ) : (
             <>
               <Link

@@ -59,11 +59,9 @@ export default function FeaturedMenu() {
         </div>
 
         {/* BUTTON */}
-        <Link href="/menu">
-          <button className="mt-10 px-7 py-3 rounded-full bg-[#8A7356] hover:bg-[#735F47] text-[#F5EBDD] font-semibold transition-all duration-300 hover:scale-105 shadow-[0_0_20px_rgba(138,115,86,0.35)]">
+        <Link href="/menu" className="inline-block mt-10 px-7 py-3 rounded-full bg-[#8A7356] hover:bg-[#735F47] text-[#F5EBDD] font-semibold transition-all duration-300 hover:scale-105 shadow-[0_0_20px_rgba(138,115,86,0.35)]">
             View Full Menu
-          </button>
-        </Link>
+          </Link>
       </div>
     </section>
   );

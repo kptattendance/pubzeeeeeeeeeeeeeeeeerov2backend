@@ -1,15 +1,12 @@
 "use client";
 
-export default function FloatingWhatsApp() {
-  const phone = "919986466266"; // country code + number, digits only (wa.me format)
+import { whatsappLink } from "@/lib/site";
 
-  const message = encodeURIComponent(
-    "Hi, I would like to book a table at Zero Degree 🍻",
-  );
+export default function FloatingWhatsApp() {
 
   return (
     <a
-      href={`https://wa.me/${phone}?text=${message}`}
+      href={whatsappLink("Hi, I would like to book a table at Zero Degree 🍻")}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat with us on WhatsApp"
