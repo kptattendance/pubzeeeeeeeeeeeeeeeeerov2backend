@@ -20,7 +20,8 @@ export default function BookPage() {
   useEffect(() => {
     const now = new Date();
 
-    const today = now.toISOString().split("T")[0];
+    // local date (toISOString is UTC and shows yesterday before 5:30 AM IST)
+    const today = now.toLocaleDateString("en-CA");
 
     let hour = now.getHours();
     const minute = now.getMinutes();
@@ -66,7 +67,7 @@ Date: ${form.date}
 Time: ${timeFormatted}
 Guests: ${form.guests}`;
 
-    const url = `https://wa.me/9986466266?text=${encodeURIComponent(message)}`;
+    const url = `https://wa.me/919986466266?text=${encodeURIComponent(message)}`;
 
     setTimeout(() => {
       setLoading(false);
@@ -79,7 +80,7 @@ Guests: ${form.guests}`;
         color: "#F8F1E7",
         confirmButtonColor: "#9C7B57",
       }).then(() => {
-        window.open(url, "_blank");
+        window.open(url, "_blank", "noopener,noreferrer");
       });
     }, 800);
   };
@@ -278,7 +279,7 @@ Guests: ${form.guests}`;
 
           {/* CALL */}
           <a
-            href="tel:+91 99864 66266"
+            href="tel:+919986466266"
             className="
               block text-center text-sm
               text-[#C5B19A]

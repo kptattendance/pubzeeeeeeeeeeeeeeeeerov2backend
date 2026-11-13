@@ -1,202 +1,156 @@
 import Event from "../models/Event.js";
-import cloudinary from "../config/cloudinary.js";
+import {
+  uploadImage,
+  deleteImage,
+  isValidId,
+  str,
+  sendError,
+  setPublicCache,
+} from "../utils/helpers.js";
+
+const FOLDER = "pub-events";
+
+const pickFields = (body) => ({
+  title: str(body.title),
+  description: str(body.description),
+  category: str(body.category),
+  eventDate: str(body.eventDate) || undefined,
+});
 
 // ==========================================
-// GET ALL EVENTS
+// GET ALL EVENTS (public)
 // ==========================================
 export const getEvents = async (req, res) => {
   try {
-    const events = await Event.find().sort({
-      priority: -1,
-      createdAt: -1,
-    });
+    const filter = { isActive: true };
+    // optional ?category=upcoming so the public page only downloads what it shows
+    const category = str(req.query.category);
+    if (category) filter.category = category;
 
-    res.status(200).json({
-      success: true,
-      count: events.length,
-      events,
-    });
+    const events = await Event.find(filter)
+      .sort({ priority: -1, createdAt: -1 })
+      .lean();
+
+    setPublicCache(res);
+
+    res.status(200).json({ success: true, count: events.length, events });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    sendError(res, error);
   }
 };
 
 // ==========================================
-// GET SINGLE EVENT
+// GET SINGLE EVENT (public)
 // ==========================================
 export const getSingleEvent = async (req, res) => {
   try {
-    const event = await Event.findById(req.params.id);
-
-    if (!event) {
-      return res.status(404).json({
-        success: false,
-        message: "Event not found",
-      });
+    if (!isValidId(req.params.id)) {
+      return res.status(404).json({ success: false, message: "Event not found" });
     }
 
-    res.status(200).json({
-      success: true,
-      event,
-    });
+    const item = await Event.findOne({ _id: req.params.id, isActive: true }).lean();
+
+    if (!item) {
+      return res.status(404).json({ success: false, message: "Event not found" });
+    }
+
+    setPublicCache(res);
+
+    res.status(200).json({ success: true, event: item });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    sendError(res, error);
   }
 };
 
 // ==========================================
-// CREATE EVENT
+// CREATE EVENT (admin)
 // ==========================================
 export const createEvent = async (req, res) => {
+  let uploaded;
+
   try {
-    let imageData = {};
-
-    // IMAGE UPLOAD
-    if (req.file) {
-      const b64 = Buffer.from(req.file.buffer).toString("base64");
-
-      const dataURI = `data:${req.file.mimetype};base64,${b64}`;
-
-      const uploadedImage = await cloudinary.uploader.upload(dataURI, {
-        folder: "pub-events",
-        // shrink huge phone photos before storing
-        transformation: [{ width: 2000, height: 2000, crop: "limit", quality: "auto:good" }],
-      });
-
-      imageData = {
-        url: uploadedImage.secure_url,
-        public_id: uploadedImage.public_id,
-      };
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: "Image is required" });
     }
 
-    // CREATE EVENT
-    const event = await Event.create({
-      title: req.body.title,
-      description: req.body.description,
-      category: req.body.category,
-      day: req.body.day,
-      eventDate: req.body.eventDate,
-      image: imageData.url,
-      imagePublicId: imageData.public_id,
+    uploaded = await uploadImage(req.file, FOLDER);
+
+    const item = await Event.create({
+      ...pickFields(req.body),
+      image: uploaded.secure_url,
+      imagePublicId: uploaded.public_id,
     });
 
-    res.status(201).json({
-      success: true,
-      event,
-    });
+    res.status(201).json({ success: true, event: item });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    // don't leave an orphan image on Cloudinary if saving failed
+    if (uploaded) await deleteImage(uploaded.public_id);
+    sendError(res, error);
   }
 };
 
 // ==========================================
-// UPDATE EVENT
+// UPDATE EVENT (admin)
 // ==========================================
 export const updateEvent = async (req, res) => {
+  let uploaded;
+
   try {
-    let event = await Event.findById(req.params.id);
-
-    if (!event) {
-      return res.status(404).json({
-        success: false,
-        message: "Event not found",
-      });
+    if (!isValidId(req.params.id)) {
+      return res.status(404).json({ success: false, message: "Event not found" });
     }
 
-    let imageUrl = event.image;
-    let imagePublicId = event.imagePublicId;
+    const item = await Event.findById(req.params.id);
 
-    // IF NEW IMAGE EXISTS
+    if (!item) {
+      return res.status(404).json({ success: false, message: "Event not found" });
+    }
+
+    const oldPublicId = item.imagePublicId;
+
+    // upload the new image first, so a failed upload never loses the old one
     if (req.file) {
-      // DELETE OLD IMAGE
-      if (event.imagePublicId) {
-        await cloudinary.uploader.destroy(event.imagePublicId);
-      }
-
-      // UPLOAD NEW IMAGE
-      const b64 = Buffer.from(req.file.buffer).toString("base64");
-
-      const dataURI = `data:${req.file.mimetype};base64,${b64}`;
-
-      const uploadedImage = await cloudinary.uploader.upload(dataURI, {
-        folder: "pub-events",
-        // shrink huge phone photos before storing
-        transformation: [{ width: 2000, height: 2000, crop: "limit", quality: "auto:good" }],
-      });
-
-      imageUrl = uploadedImage.secure_url;
-      imagePublicId = uploadedImage.public_id;
+      uploaded = await uploadImage(req.file, FOLDER);
+      item.image = uploaded.secure_url;
+      item.imagePublicId = uploaded.public_id;
     }
 
-    // UPDATE EVENT
-    event = await Event.findByIdAndUpdate(
-      req.params.id,
-      {
-        title: req.body.title,
-        description: req.body.description,
-        category: req.body.category,
-        day: req.body.day,
-        eventDate: req.body.eventDate,
-        image: imageUrl,
-        imagePublicId: imagePublicId,
-      },
-      {
-        new: true,
-        runValidators: true,
-      },
-    );
+    const fields = pickFields(req.body);
+    for (const [key, value] of Object.entries(fields)) {
+      if (value !== undefined) item[key] = value;
+    }
 
-    res.status(200).json({
-      success: true,
-      event,
-    });
+    await item.save();
+
+    if (uploaded) await deleteImage(oldPublicId);
+
+    res.status(200).json({ success: true, event: item });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    if (uploaded) await deleteImage(uploaded.public_id);
+    sendError(res, error);
   }
 };
 
 // ==========================================
-// DELETE EVENT
+// DELETE EVENT (admin)
 // ==========================================
 export const deleteEvent = async (req, res) => {
   try {
-    const event = await Event.findById(req.params.id);
-
-    if (!event) {
-      return res.status(404).json({
-        success: false,
-        message: "Event not found",
-      });
+    if (!isValidId(req.params.id)) {
+      return res.status(404).json({ success: false, message: "Event not found" });
     }
 
-    // DELETE CLOUDINARY IMAGE
-    if (event.imagePublicId) {
-      await cloudinary.uploader.destroy(event.imagePublicId);
+    const item = await Event.findById(req.params.id);
+
+    if (!item) {
+      return res.status(404).json({ success: false, message: "Event not found" });
     }
 
-    // DELETE EVENT
-    await event.deleteOne();
+    await item.deleteOne();
+    await deleteImage(item.imagePublicId);
 
-    res.status(200).json({
-      success: true,
-      message: "Event deleted successfully",
-    });
+    res.status(200).json({ success: true, message: "Event deleted successfully" });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    sendError(res, error);
   }
 };

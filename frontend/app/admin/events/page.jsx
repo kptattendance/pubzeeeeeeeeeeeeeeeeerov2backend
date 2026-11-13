@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-import api from "@/services/api";
+import api, { noCache } from "@/services/api";
+import { compressImage } from "@/services/image";
 
 import Swal from "sweetalert2";
 
@@ -53,7 +54,7 @@ export default function AdminEventsPage() {
     try {
       setLoading(true);
 
-      const { data } = await api.get("/events");
+      const { data } = await api.get("/events", noCache());
 
       setEvents(data.events);
     } catch (error) {
@@ -118,10 +119,21 @@ export default function AdminEventsPage() {
   // ==========================================
   // IMAGE CHANGE
   // ==========================================
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
+  const handleFileChange = async (e) => {
+    const file = await compressImage(e.target.files[0]);
 
     if (!file) return;
+
+    if (file.size > 4 * 1024 * 1024) {
+      Swal.fire({
+        icon: "error",
+        title: "Image Too Large",
+        text: "Please upload an image smaller than 4 MB",
+        background: "#1A1411",
+        color: "#F5EBDD",
+      });
+      return;
+    }
 
     setFormData({
       ...formData,

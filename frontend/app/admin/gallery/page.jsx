@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-import api from "@/services/api";
+import api, { noCache } from "@/services/api";
+import { compressImage } from "@/services/image";
 
 import { useAuth } from "@clerk/nextjs";
 
@@ -53,7 +54,7 @@ export default function AdminGalleryPage() {
     try {
       setLoading(true);
 
-      const { data } = await api.get("/gallery");
+      const { data } = await api.get("/gallery", noCache());
 
       setItems(data.items || []);
     } catch (error) {
@@ -115,8 +116,8 @@ export default function AdminGalleryPage() {
   // ==========================================
   // HANDLE IMAGE
   // ==========================================
-  const handleImage = (e) => {
-    const file = e.target.files[0];
+  const handleImage = async (e) => {
+    const file = await compressImage(e.target.files[0]);
 
     if (!file) return;
 

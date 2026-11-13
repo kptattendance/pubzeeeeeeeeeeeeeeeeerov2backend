@@ -6,8 +6,8 @@ export default function HeroVideo() {
   const videoRef = useRef(null);
 
   const videos = [
-    "https://res.cloudinary.com/dnreqxbdw/video/upload/f_auto,q_auto/v1/3_cbp3ji.mp4",
-    "https://res.cloudinary.com/dnreqxbdw/video/upload/f_auto,q_auto/v1/2_hla1ym.mp4",
+    "https://res.cloudinary.com/dnreqxbdw/video/upload/f_auto,q_auto,w_1280,c_limit/v1/3_cbp3ji.mp4",
+    "https://res.cloudinary.com/dnreqxbdw/video/upload/f_auto,q_auto,w_1280,c_limit/v1/2_hla1ym.mp4",
   ];
 
   const [currentVideo, setCurrentVideo] = useState(0);

@@ -1,7 +1,7 @@
 "use client";
 
 export default function FloatingWhatsApp() {
-  const phone = "+91 99864 66266"; // your number
+  const phone = "919986466266"; // country code + number, digits only (wa.me format)
 
   const message = encodeURIComponent(
     "Hi, I would like to book a table at Zero Degree 🍻",
@@ -11,6 +11,8 @@ export default function FloatingWhatsApp() {
     <a
       href={`https://wa.me/${phone}?text=${message}`}
       target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Chat with us on WhatsApp"
       className="fixed right-6 z-50 group bottom-20 md:bottom-6"
     >
       <div className="relative">

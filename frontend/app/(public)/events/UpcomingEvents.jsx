@@ -13,9 +13,11 @@ export default function UpcomingEvents() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const { data } = await api.get("/events");
+        const { data } = await api.get("/events", {
+          params: { category: "upcoming" },
+        });
 
-        const upcoming = data.events.filter(
+        const upcoming = (data.events || []).filter(
           (item) => item.category === "upcoming",
         );
 

@@ -1,225 +1,151 @@
 import Gallery from "../models/Gallery.js";
+import {
+  uploadImage,
+  deleteImage,
+  isValidId,
+  str,
+  sendError,
+  setPublicCache,
+} from "../utils/helpers.js";
 
-import cloudinary from "../config/cloudinary.js";
+const FOLDER = "pub-gallery";
+
+const pickFields = (body) => ({
+  title: str(body.title),
+  description: str(body.description),
+  category: str(body.category),
+  galleryDate: str(body.galleryDate) || undefined,
+});
 
 // ==========================================
-// GET ALL GALLERY ITEMS
+// GET ALL GALLERY ITEMS (public)
 // ==========================================
 export const getGalleryItems = async (req, res) => {
   try {
-    const items = await Gallery.find({
-      isActive: true,
-    }).sort({
-      priority: -1,
-      createdAt: -1,
-    });
+    const items = await Gallery.find({ isActive: true })
+      .sort({ priority: -1, createdAt: -1 })
+      .lean();
 
-    res.status(200).json({
-      success: true,
-      count: items.length,
-      items,
-    });
+    setPublicCache(res);
+
+    res.status(200).json({ success: true, count: items.length, items });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    sendError(res, error);
   }
 };
 
 // ==========================================
-// GET SINGLE GALLERY ITEM
+// GET SINGLE GALLERY ITEM (public)
 // ==========================================
 export const getSingleGalleryItem = async (req, res) => {
   try {
+    if (!isValidId(req.params.id)) {
+      return res.status(404).json({ success: false, message: "Gallery item not found" });
+    }
+
+    const item = await Gallery.findOne({ _id: req.params.id, isActive: true }).lean();
+
+    if (!item) {
+      return res.status(404).json({ success: false, message: "Gallery item not found" });
+    }
+
+    setPublicCache(res);
+
+    res.status(200).json({ success: true, item });
+  } catch (error) {
+    sendError(res, error);
+  }
+};
+
+// ==========================================
+// CREATE GALLERY ITEM (admin)
+// ==========================================
+export const createGalleryItem = async (req, res) => {
+  let uploaded;
+
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: "Image is required" });
+    }
+
+    uploaded = await uploadImage(req.file, FOLDER);
+
+    const item = await Gallery.create({
+      ...pickFields(req.body),
+      image: uploaded.secure_url,
+      imagePublicId: uploaded.public_id,
+    });
+
+    res.status(201).json({ success: true, item });
+  } catch (error) {
+    // don't leave an orphan image on Cloudinary if saving failed
+    if (uploaded) await deleteImage(uploaded.public_id);
+    sendError(res, error);
+  }
+};
+
+// ==========================================
+// UPDATE GALLERY ITEM (admin)
+// ==========================================
+export const updateGalleryItem = async (req, res) => {
+  let uploaded;
+
+  try {
+    if (!isValidId(req.params.id)) {
+      return res.status(404).json({ success: false, message: "Gallery item not found" });
+    }
+
     const item = await Gallery.findById(req.params.id);
 
     if (!item) {
-      return res.status(404).json({
-        success: false,
-        message: "Gallery item not found",
-      });
+      return res.status(404).json({ success: false, message: "Gallery item not found" });
     }
 
-    res.status(200).json({
-      success: true,
-      item,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
+    const oldPublicId = item.imagePublicId;
 
-// ==========================================
-// CREATE GALLERY ITEM
-// ==========================================
-export const createGalleryItem = async (req, res) => {
-  try {
-    let imageData = {};
-
-    // IMAGE UPLOAD
+    // upload the new image first, so a failed upload never loses the old one
     if (req.file) {
-      const b64 = Buffer.from(req.file.buffer).toString("base64");
-
-      const dataURI = `data:${req.file.mimetype};base64,${b64}`;
-
-      console.log("Request received");
-      console.log("File exists:", !!req.file);
-
-      if (req.file) {
-        console.log("File size:", req.file.size);
-      }
-
-      console.log("Starting Cloudinary upload...");
-
-      const uploadedImage = await cloudinary.uploader.upload(dataURI, {
-        folder: "pub-gallery",
-        // shrink huge phone photos before storing
-        transformation: [{ width: 2000, height: 2000, crop: "limit", quality: "auto:good" }],
-      });
-
-      imageData = {
-        url: uploadedImage.secure_url,
-
-        public_id: uploadedImage.public_id,
-      };
+      uploaded = await uploadImage(req.file, FOLDER);
+      item.image = uploaded.secure_url;
+      item.imagePublicId = uploaded.public_id;
     }
 
-    // CREATE ITEM
-    const item = await Gallery.create({
-      title: req.body.title,
+    const fields = pickFields(req.body);
+    for (const [key, value] of Object.entries(fields)) {
+      if (value !== undefined) item[key] = value;
+    }
 
-      description: req.body.description,
+    await item.save();
 
-      category: req.body.category,
+    if (uploaded) await deleteImage(oldPublicId);
 
-      galleryDate: req.body.galleryDate,
-
-      image: imageData.url,
-
-      imagePublicId: imageData.public_id,
-    });
-
-    res.status(201).json({
-      success: true,
-      item,
-    });
+    res.status(200).json({ success: true, item });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    if (uploaded) await deleteImage(uploaded.public_id);
+    sendError(res, error);
   }
 };
 
 // ==========================================
-// UPDATE GALLERY ITEM
-// ==========================================
-export const updateGalleryItem = async (req, res) => {
-  try {
-    let item = await Gallery.findById(req.params.id);
-
-    if (!item) {
-      return res.status(404).json({
-        success: false,
-        message: "Gallery item not found",
-      });
-    }
-
-    let imageUrl = item.image;
-
-    let imagePublicId = item.imagePublicId;
-
-    // IF NEW IMAGE EXISTS
-    if (req.file) {
-      // DELETE OLD IMAGE
-      if (item.imagePublicId) {
-        await cloudinary.uploader.destroy(item.imagePublicId);
-      }
-
-      // UPLOAD NEW IMAGE
-      const b64 = Buffer.from(req.file.buffer).toString("base64");
-
-      const dataURI = `data:${req.file.mimetype};base64,${b64}`;
-
-      const uploadedImage = await cloudinary.uploader.upload(dataURI, {
-        folder: "pub-gallery",
-        // shrink huge phone photos before storing
-        transformation: [{ width: 2000, height: 2000, crop: "limit", quality: "auto:good" }],
-      });
-
-      imageUrl = uploadedImage.secure_url;
-
-      imagePublicId = uploadedImage.public_id;
-    }
-
-    // UPDATE ITEM
-    item = await Gallery.findByIdAndUpdate(
-      req.params.id,
-      {
-        title: req.body.title,
-
-        description: req.body.description,
-
-        category: req.body.category,
-
-        galleryDate: req.body.galleryDate,
-
-        image: imageUrl,
-
-        imagePublicId: imagePublicId,
-      },
-      {
-        new: true,
-        runValidators: true,
-      },
-    );
-
-    res.status(200).json({
-      success: true,
-      item,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-// ==========================================
-// DELETE GALLERY ITEM
+// DELETE GALLERY ITEM (admin)
 // ==========================================
 export const deleteGalleryItem = async (req, res) => {
   try {
+    if (!isValidId(req.params.id)) {
+      return res.status(404).json({ success: false, message: "Gallery item not found" });
+    }
+
     const item = await Gallery.findById(req.params.id);
 
     if (!item) {
-      return res.status(404).json({
-        success: false,
-        message: "Gallery item not found",
-      });
+      return res.status(404).json({ success: false, message: "Gallery item not found" });
     }
 
-    // DELETE CLOUDINARY IMAGE
-    if (item.imagePublicId) {
-      await cloudinary.uploader.destroy(item.imagePublicId);
-    }
-
-    // DELETE ITEM
     await item.deleteOne();
+    await deleteImage(item.imagePublicId);
 
-    res.status(200).json({
-      success: true,
-      message: "Gallery item deleted successfully",
-    });
+    res.status(200).json({ success: true, message: "Gallery item deleted successfully" });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    sendError(res, error);
   }
 };
